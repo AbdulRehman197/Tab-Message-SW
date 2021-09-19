@@ -44,20 +44,18 @@ const APP = {
       debugger;
       //, otherAction: 'hello'
       APP.sendMessage({ addPerson: person });
-      APP.mylist = [person];
+      APP.mylist = [...APP.mylist, person];
       console.log("Save", APP.mylist);
 
       // debugger;
-      let newlist = APP.mylist.filter((item) => {
-        return item.message !== person.message ? null : person.message;
-      });
 
-      APP.mylist.forEach((item) => {
+      let newlist = APP.mylist.map((item) => {
         // console.log("id", APP.m);
         // if (person.message !== item.message) {
-        ul.innerHTML += `<tr><td>${item.id}</td><td>${item.message}</td> </tr>`;
+        return `<tr><td>${item.id}</td><td>${item.message}</td> </tr>`;
         // }
       });
+      ul.innerHTML = newlist;
     }
   },
   sendMessage(msg) {
@@ -73,19 +71,17 @@ const APP = {
     let ul = document.getElementById("otherlist");
     //got a message from the service worker
 
-    APP.otherlist = [data.addPerson];
+    APP.otherlist = [...APP.otherlist, data.addPerson];
     console.log("Web page receiving", data);
     console.log("Web page receiving list", APP.otherlist);
-    let newlist = APP.otherlist.filter((item) => {
-      return item.message !== data.addPerson.message
-        ? null
-        : data.addPerson.message;
-    });
-    APP.otherlist.forEach((item) => {
-      // if (data.message !== item.message) {
-      ul.innerHTML += `<tr><td>${item.id}</td><td>${item.message}</td> </tr>`;
+
+    let newlist = APP.otherlist.map((item) => {
+      // console.log("id", APP.m);
+      // if (person.message !== item.message) {
+      return `<tr><td>${item.id}</td><td>${item.message}</td> </tr>`;
       // }
     });
+    ul.innerHTML = newlist;
   },
 };
 
