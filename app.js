@@ -61,16 +61,17 @@ const APP = {
       debugger;
       //, otherAction: 'hello'
       APP.sendMessage({ addPerson: person });
-      APP.mylist = [person];
+      APP.mylist = [...APP.mylist, person];
       // debugger;
 
       setTimeout(() => {
-        APP.mylist.forEach((item) => {
+        let newlist = APP.mylist.map((item) => {
           // console.log("id", APP.m);
           // if (person.message !== item.message) {
-          ul.innerHTML += `<tr><td>${APP.myid}</td><td>${item.message}</td> </tr>`;
+          return `<tr><td>${APP.myid}</td><td>${item.message}</td> </tr>`;
           // }
         });
+        ul.innerHTML = newlist;
       }, 10);
     }
   },
@@ -90,14 +91,15 @@ const APP = {
       APP.myIdTag.innerHTML = data;
       APP.myid = data;
     } else {
-      APP.otherlist = [data];
+      APP.otherlist = [...APP.otherlist, data];
       console.log("Web page receiving list", APP.otherlist);
 
-      APP.otherlist.forEach((item) => {
+      let newlist = APP.otherlist.map((item) => {
         // if (data.message !== item.message) {
-        ul.innerHTML += `<tr><td>${item.clientId}</td><td>${item.message}</td> </tr>`;
+        return `<tr><td>${item.clientId}</td><td>${item.message}</td> </tr>`;
         // }
       });
+      ul.innerHTML = newlist;
     }
   },
 };
