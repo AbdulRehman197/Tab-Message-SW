@@ -65,6 +65,7 @@ const APP = {
     //   navigator.serviceWorker.controller.postMessage(msg);
     //   console.log(navigator.serviceWorker);
     // }
+    // APP.bc.close();
   },
 
   onMessage({ data }) {
