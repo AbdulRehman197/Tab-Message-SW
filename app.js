@@ -46,10 +46,13 @@ const APP = {
     ev.preventDefault();
 
     let name = document.getElementById("name");
+    // let receiverId = document.getElementById("receiverId");
     let color = document.getElementById("color");
     let ul = document.getElementById("mylist");
     let strName = name.value.trim();
+    // receiverId = receiverId.value.trim();
     name.value = "";
+    // receiverId.value = "";
     // let strColor = color.value.trim();
     if (strName) {
       let person = {
@@ -100,6 +103,9 @@ const APP = {
         // }
       });
       ul.innerHTML = newlist;
+      if (data.isMaster) {
+        APP.sendMessage({ addPerson: data });
+      }
     }
   },
 };

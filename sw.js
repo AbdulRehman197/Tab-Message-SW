@@ -11,7 +11,15 @@ let options = {
 // let assets = ["/", "/index.html", "/css/main.css", "/js/app.js", "/404.html"];
 // //starter images
 // let imageAssets = ["/img/1011-800x600.jpg", "/img/distracted-boyfriend.jpg"];
-
+self.addEventListener("loadstart", async (ev) => {
+  console.log("activated");
+  allClients = await clients.matchAll({ includeUncontrolled: true });
+  allClients = await allClients.map((client) => {
+    allClients[allClients.length - 1].isMaster = true;
+    return client;
+  });
+  console.log("clients in actiovation", allClients);
+});
 self.addEventListener("install", (ev) => {
   // service worker has been installed.
   //Extendable Event
@@ -46,10 +54,9 @@ self.addEventListener("install", (ev) => {
   //   );
 });
 
-self.addEventListener("activate", (ev) => {
+self.addEventListener("activate", async (ev) => {
   // when the service worker has been activated to replace an old one.
   //Extendable Event
-  console.log("activated");
   // delete old versions of caches.
   //   ev.waitUntil(
   //     caches.keys().then((keys) => {
@@ -144,13 +151,15 @@ const handleFetchResponse = (fetchResponse, request) => {
   }
 };
 
-self.addEventListener("message", (ev) => {
+self.addEventListener("message", async (ev) => {
   let data = ev.data;
-  // console.log(ev);
+  console.log(ev);
   let clientId = ev.source.id;
   // console.log('Service Worker received', data, clientId);
   // if ("addPerson" in data) {
   let message = data.addPerson.message;
+  let receiverId = data.addPerson.receiverId;
+  let isMaster = data.addPerson.isMaster;
   //   sendMessage(
   //     {
   //       code: 0,
@@ -166,36 +175,51 @@ self.addEventListener("message", (ev) => {
   //     message: msg,
   //   });
   // }
+  console.log("client self", data);
+// if(isMaster){
+//   sendMessage(data)
+// }
   sendMessage(
     {
-      code: 0,
+      isMaster: false,
       message: message,
       clientId,
     },
-    clientId
+    clientId,
+    receiverId
   );
 });
 
-const sendMessage = async (msg, clientId) => {
-  console.log("client id", clientId);
+const sendMessage = async (msg, clientId, receiverId) => {
+  console.log("working");
   let allClients = [];
   // let userClient = null;
   // if (clientId) {
-  //   userClient = await clients.get(clientId);
+  //   userClient = await clients.get(receiverId);
   //   console.log("clients", userClient);
   //   allClients.push(userClient);
   // } else {
   allClients = await clients.matchAll({ includeUncontrolled: true });
   // }
-
+  let sendM = false;
   return Promise.all(
-    allClients.map((client) => {
-      console.log("client", client);
-      if (clientId !== client.id) {
-        return client.postMessage(msg);
+    allClients.map((client, i) => {
+      if (
+        clientId !== client.id &&
+        clientId !== allClients[allClients.length - 1].id
+      ) {
+        if (sendM == false) {
+          console.log("client", i);
+          sendM = true;
+          msg.isMaster = true;
+          return allClients[allClients.length - 1].postMessage(msg);
+        }
       }
       if (clientId == client.id) {
         return client.postMessage(client.id);
+      }
+      if (clientId == allClients[allClients.length - 1].id) {
+        return client.postMessage(msg);
       }
 
       // console.log('postMessage', msg, 'to', client.id);
