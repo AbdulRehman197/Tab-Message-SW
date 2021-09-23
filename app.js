@@ -51,7 +51,7 @@ const APP = {
         console.log("transactionwrite2 complete");
         // console.log("result", result.result);
       };
-      
+      APP.db.close();
     };
   },
 };
