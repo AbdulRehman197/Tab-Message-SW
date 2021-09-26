@@ -146,30 +146,14 @@ const handleFetchResponse = (fetchResponse, request) => {
 
 self.addEventListener("message", (ev) => {
   let data = ev.data;
-  // console.log(ev);
+
   let clientId = ev.source.id;
-  // console.log('Service Worker received', data, clientId);
-  // if ("addPerson" in data) {
-  let message = data.addPerson.message;
-  //   sendMessage(
-  //     {
-  //       code: 0,
-  //       message: msg,
-  //     },
-  //     clientId
-  //   );
-  // }
-  // if ("otherAction" in data) {
-  //   let msg = "Hola";
-  //   sendMessage({
-  //     code: 0,
-  //     message: msg,
-  //   });
-  // }
+
+  let tab = data.tab;
+
   sendMessage(
     {
-      code: 0,
-      message: message,
+      tab,
       clientId,
     },
     clientId
@@ -179,26 +163,18 @@ self.addEventListener("message", (ev) => {
 const sendMessage = async (msg, clientId) => {
   console.log("client id", clientId);
   let allClients = [];
-  // let userClient = null;
-  // if (clientId) {
-  //   userClient = await clients.get(clientId);
-  //   console.log("clients", userClient);
-  //   allClients.push(userClient);
-  // } else {
-  allClients = await clients.matchAll({ includeUncontrolled: true });
-  // }
+  let userClient = null;
+  if (clientId) {
+    userClient = await clients.get(clientId);
+    console.log("clients", userClient);
+    allClients.push(userClient);
+  } else {
+    allClients = await clients.matchAll({ includeUncontrolled: true });
+  }
 
   return Promise.all(
     allClients.map((client) => {
-      console.log("client", client);
-      if (clientId !== client.id) {
-        return client.postMessage(msg);
-      }
-      if (clientId == client.id) {
-        return client.postMessage(client.id);
-      }
-
-      // console.log('postMessage', msg, 'to', client.id);
+      return client.postMessage(msg);
     })
   );
 };

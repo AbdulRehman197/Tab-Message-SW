@@ -28,9 +28,14 @@
         <p>
           <label id="myid"></label>
 
-          <label for="name">Send Message to Others</label>
-          <input type="text" id="name" name="name" />
+          <label for="name">Enter the Counter</label>
+          <input type="number" id="counter" name="name" />
         </p>
+        <span>
+          <button id="tab1">Tab1 Save</button>
+          <button id="tab2">Tab2 Save</button>
+          <button id="tab3">Tab3 Save</button>
+        </span>
         <!-- <p>
           <label for="color">Favourite Colour</label>
           <input type="color" id="color" name="color" />
@@ -38,7 +43,7 @@
         <p>
           
           <!-- <ul id="list"></ul> -->
-          <h3 for="color">Your messages</h3>
+          <!-- <h3 for="color">Your messages</h3>
         <table id="mylist">
           <tr>
             <th>ID</th>
@@ -52,13 +57,21 @@
             <th>ID</th>
             <th>Message</th>
           </tr>
-        </table>
+        </table> -->
+   <p>
+         
+          <label>Status: <span id = "status"></span></label>
+          <label>Counter: <span id = "ShowValue">0</span></label>
+        
+   </p>
         </p>
-        <p>
-          <button id="btnSave">Send</button>
-        </p>
+  
       </form>
     </main>
     <script defer src="./app.js"></script>
+    <script src="https://unpkg.com/idb/build/iife/index-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js" integrity="sha512-szJ5FSo9hEmXXe7b5AUVtn/WnL8a5VofnFeYC2i2z03uS2LhAch7ewNLbl5flsEmTTimMN0enBZg/3sQ+YOSzQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.js" integrity="sha512-8WAv/Z7UaDv0U1DCJ3W1oul76HOvq2/9mc+IbOZGsTj9iwZnnCXL/0FS6GQKNR++krdfVn9kuAAQ6v2DqZ9uEQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
   </body>
 </html>

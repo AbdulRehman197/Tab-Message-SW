@@ -5,14 +5,17 @@ const APP = {
   ul: null,
   myid: null,
   myIdTag: null,
+  isFinished: false,
   init() {
     //called after DOMContentLoaded
     //register our service worker
     APP.registerSW();
-    document
-      .getElementById("colorForm")
-      .addEventListener("submit", APP.saveColor);
-
+    // document
+    //   .getElementById("colorForm")
+    //   .addEventListener("submit", APP.saveColor);
+    document.getElementById("tab1").addEventListener("click", APP.saveColor);
+    document.getElementById("tab2").addEventListener("click", APP.saveColor);
+    document.getElementById("tab3").addEventListener("click", APP.saveColor);
     document.querySelector("h2").addEventListener("click", (ev) => {
       //send a message to the service worker
       //have it bounce back to all pages sharing that sw
@@ -44,36 +47,7 @@ const APP = {
   },
   saveColor(ev) {
     ev.preventDefault();
-
-    let name = document.getElementById("name");
-    let color = document.getElementById("color");
-    let ul = document.getElementById("mylist");
-    let strName = name.value.trim();
-    name.value = "";
-    // let strColor = color.value.trim();
-    if (strName) {
-      let person = {
-        isMatser: false,
-        message: strName,
-      };
-      console.log("Save", person);
-      //send the data to the service worker
-      debugger;
-      //, otherAction: 'hello'
-      APP.sendMessage({ addPerson: person });
-      APP.mylist = [...APP.mylist, person];
-      // debugger;
-
-      setTimeout(() => {
-        let newlist = APP.mylist.map((item) => {
-          // console.log("id", APP.m);
-          // if (person.message !== item.message) {
-          return `<tr><td>${APP.myid}</td><td>${item.message}</td> </tr>`;
-          // }
-        });
-        ul.innerHTML = newlist;
-      }, 10);
-    }
+    APP.sendMessage({ tab: ev.target.id });
   },
   sendMessage(msg) {
     //send some structured-cloneable data from the webpage to the sw
@@ -83,23 +57,117 @@ const APP = {
     }
   },
   onMessage({ data }) {
-    let ul = document.getElementById("otherlist");
     APP.myIdTag = document.getElementById("myid");
-    //got a message from the service worker
-    console.log("Web page receiving", data);
-    if (typeof data == "string") {
-      APP.myIdTag.innerHTML = data;
-      APP.myid = data;
-    } else {
-      APP.otherlist = [...APP.otherlist, data];
-      console.log("Web page receiving list", APP.otherlist);
+    console.log("data", data);
+    APP.myIdTag.innerHTML = data.clientId;
+    APP.myid = data.clientId;
+    if (data.tab == "tab1") {
+      console.log("tab1 working", data.tab);
+      APP.tab1SaveData();
+    }
+    if (data.tab == "tab2") {
+      console.log("tab2 working", data.tab);
 
-      let newlist = APP.otherlist.map((item) => {
-        // if (data.message !== item.message) {
-        return `<tr><td>${item.clientId}</td><td>${item.message}</td> </tr>`;
-        // }
-      });
-      ul.innerHTML = newlist;
+      APP.tab2SaveData();
+    }
+    if (data.tab == "tab3") {
+      console.log("tab3 working", data.tab);
+
+      APP.tab3SaveData();
+    }
+  },
+
+  async tab1SaveData() {
+    APP.isFinished = false;
+    // ev.preventDefault();
+    let status = document.getElementById("status");
+
+    let counter = document.getElementById("counter").value;
+    let ShowValue = document.getElementById("ShowValue");
+    let name = `DB1_Blob`;
+    let db = await idb.openDB("db1", 1, {
+      upgrade(db) {
+        db.createObjectStore("store");
+      },
+    });
+
+    if (!this.isFinished) {
+      status.innerHTML = "Proccesing";
+    }
+    const tx = await db.transaction("store", "readwrite");
+    const store = await tx.objectStore("store");
+    for (let index = 0; index < counter; index++) {
+      ShowValue.innerHTML = index + 1;
+      await store.put(
+        name + (index + 1) + "_" + APP.myid,
+        sha256(name + (index + 1) + APP.myid)
+      );
+      APP.isFinished = true;
+    }
+    if (this.isFinished) {
+      status.innerHTML = "Finish";
+    }
+  },
+  async tab2SaveData() {
+    APP.isFinished = false;
+    // ev.preventDefault();
+    let status = document.getElementById("status");
+
+    let counter = document.getElementById("counter").value;
+    let ShowValue = document.getElementById("ShowValue");
+    let name = `DB1_Blob`;
+    let db = await idb.openDB("db1", 1, {
+      upgrade(db) {
+        db.createObjectStore("store");
+      },
+    });
+
+    if (!this.isFinished) {
+      status.innerHTML = "Proccesing";
+    }
+    const tx = await db.transaction("store", "readwrite");
+    const store = await tx.objectStore("store");
+    for (let index = 0; index < counter; index++) {
+      ShowValue.innerHTML = index + 1;
+      await store.put(
+        name + (index + 1) + "_" + APP.myid,
+        sha256(name + (index + 1) + APP.myid)
+      );
+      APP.isFinished = true;
+    }
+    if (this.isFinished) {
+      status.innerHTML = "Finish";
+    }
+  },
+  async tab3SaveData() {
+    APP.isFinished = false;
+    // ev.preventDefault();
+    let status = document.getElementById("status");
+
+    let counter = document.getElementById("counter").value;
+    let ShowValue = document.getElementById("ShowValue");
+    let name = `DB1_Blob`;
+    let db = await idb.openDB("db1", 1, {
+      upgrade(db) {
+        db.createObjectStore("store");
+      },
+    });
+
+    if (!this.isFinished) {
+      status.innerHTML = "Proccesing";
+    }
+    const tx = await db.transaction("store", "readwrite");
+    const store = await tx.objectStore("store");
+    for (let index = 0; index < counter; index++) {
+      ShowValue.innerHTML = index + 1;
+      await store.put(
+        name + (index + 1) + "_" + APP.myid,
+        sha256(name + (index + 1) + APP.myid)
+      );
+      APP.isFinished = true;
+    }
+    if (this.isFinished) {
+      status.innerHTML = "Finish";
     }
   },
 };
